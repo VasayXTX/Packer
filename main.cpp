@@ -4,52 +4,119 @@
 #include <time.h>
 
 #include "packer.h"
+#include "error.h"
+#include "printer.h"
 
-void InitFile(const std::string &aFName)
+void InitFile(const std::string &aFName, unsigned int aFLen)
 {
 	FILE *fOut = fopen(aFName.c_str(), "wb");
 
-	unsigned int fLen = 1;
-
 	for (unsigned int c = 0; c <= UCHAR_MAX; ++c)
 	{
-		for (unsigned int i = 0; i < fLen; ++i)
+		for (unsigned int i = 0; i < aFLen; ++i)
 		{
 			fprintf(fOut, "%c", (unsigned char)c);
 		}
-		//++fLen;
 	}
 
 	fclose(fOut);
 }
 
-int main()
+std::string GetShortFileName(const std::string &aStr)
 {
-	//InitFile("input.in");
-	InitFile("input2.in");
-	InitFile("input3.in");
+	unsigned int i = i = aStr.size();
+	while (i > 0 && aStr[i-1] != '\\')
+	{
+		--i;
+	}
+	std::string res;
+	while (i < aStr.size())
+	{
+		res.push_back(aStr[i++]);
+	}
+	return res;
+}
 
-	//PackerHuffman packer;
+int main(int argc, char *argv[])
+{
+	InitFile("input1.in", 1);
+	InitFile("input2.in", 2);
+	InitFile("input3.in", 3);
 
-	//Packed
-	LstFile lstFile;
-	lstFile.push_back("input2.in");
-	lstFile.push_back("input.in");
-	lstFile.push_back("input3.in");
-	PackerHuffman p;
-	time_t tBegin = time(0);
-	p.Pack(lstFile, "output.smr");
-	time_t tEnd = time(0);
-	printf("Time packing: %i\n", tEnd - tBegin);
+	argc = 7;
+	argv[1] = "/c";
+	argv[2] = "/h";	
+	argv[3] = "output.out";
+	argv[4] = "input1.in";
+	argv[5] = "input2.in";
+	argv[6] = "input3.in";
 
-	////UnPacked
-	UnPacker up;
-	tBegin = time(0);
-	up.UnPack("output.smr");
-	tEnd = time(0);
-	printf("Time unpacking: %i\n", tEnd - tBegin);
+	Printer pr;
 
-	char ch;
-	scanf("%c", &ch);
+	if (argc == 1)
+	{
+		pr.PrintAbout();
+		return 0;
+	}
+	try
+	{
+		if (argc == 2)
+		{
+			if (!strcmp(argv[1], "/h"))
+			{
+				throw Error(std::string("Invalid key: ") + std::string(argv[1]));
+			}
+			pr.PrintHelp();
+			return 0;
+		}
+		if (!strcmp(argv[1], "/c"))
+		{
+			if (argc < 4)
+			{
+				throw Error("Not specified name of archived file");
+			}
+			if (argc < 5)
+			{
+				throw Error("Not specified files for archiving");
+			}
+
+			LstFile lstFile;
+			for (unsigned int i = 4; i < argc; ++i)
+			{
+				lstFile.push_back(GetShortFileName(argv[i]));
+			}
+
+			if (!strcmp(argv[2], "/r"))
+			{
+				PackerRLE::PackerRLE().Pack(lstFile, argv[3]);
+			}
+			else if (!strcmp(argv[2], "/h"))
+			{
+				PackerHuffman::PackerHuffman().Pack(lstFile, argv[3]);
+			}
+			else
+			{
+				throw Error(std::string("Invalid key: ") + std::string(argv[2]));
+			}
+		}
+		else if (!strcmp(argv[1], "/d"))
+		{
+			if (argc > 3)
+			{
+				throw Error(std::string("Invalid key: ") + std::string(argv[3]));
+			}
+			UnPacker::UnPacker().UnPack(argv[2]);
+			return 0;
+		}
+		else
+		{
+			throw Error(std::string("Invalid key: ") + std::string(argv[1]));
+		}
+	}
+	catch (Error &aErr)
+	{
+		pr.PrintError(aErr);
+	}
+	system("pause");
 	return 0;
 }
