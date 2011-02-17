@@ -39,17 +39,17 @@ std::string GetShortFileName(const std::string &aStr)
 
 int main(int argc, char *argv[])
 {
-	InitFile("input1.in", 1);
+	/*InitFile("input1.in", 1);
 	InitFile("input2.in", 2);
-	InitFile("input3.in", 3);
+	InitFile("input3.in", 3);*/
 
-	argc = 7;
-	argv[1] = "/c";
-	argv[2] = "/h";	
-	argv[3] = "output.out";
-	argv[4] = "input1.in";
+	/*argc = 3;
+	argv[1] = "/d";*/
+	//argv[2] = "/h";	
+	//argv[2] = "output.out";
+	/*argv[4] = "input1.in";
 	argv[5] = "input2.in";
-	argv[6] = "input3.in";
+	argv[6] = "input3.in";*/
 
 	Printer pr;
 
@@ -64,10 +64,10 @@ int main(int argc, char *argv[])
 		{
 			if (!strcmp(argv[1], "/h"))
 			{
-				throw Error(std::string("Invalid key: ") + std::string(argv[1]));
+				pr.PrintHelp();
+				return 0;
 			}
-			pr.PrintHelp();
-			return 0;
+			throw Error(std::string("Invalid key: ") + std::string(argv[1]));
 		}
 		if (!strcmp(argv[1], "/c"))
 		{
@@ -117,6 +117,6 @@ int main(int argc, char *argv[])
 	{
 		pr.PrintError(aErr);
 	}
-	system("pause");
+//	system("pause");
 	return 0;
 }

@@ -117,6 +117,14 @@ inline bool Reader::SetNext(FILE *aFIn, unsigned char *aCh)
 	return true;
 }
 
+inline void Reader::_SetNext(FILE *aFIn, unsigned char *aCh)
+{
+	if (!SetNext(aFIn, aCh))
+	{
+		throw Error("Error in decompression. Perhaps the archive is corrupted");
+	}
+}
+
 //Функция, реализующая чтение размера файла в несжатом виде
 unsigned int Reader::ReadInt(FILE *aFIn)
 {
@@ -125,7 +133,7 @@ unsigned int Reader::ReadInt(FILE *aFIn)
 	for (unsigned int i = 0; i < sizeof(res); ++i)
 	{
 		unsigned char c;
-		SetNext(aFIn, &c);
+		_SetNext(aFIn, &c);
 		*pC++ = c;
 	}
 	return res;
@@ -155,6 +163,10 @@ Packer::Packer(unsigned int aBufSize, Alg aAlg):
 void Packer::Pack(const LstFile &aLstFileIn, const std::string &aFileOut)
 {
 	FILE *fIn, *fOut = fopen(aFileOut.c_str(), "wb");
+	if (!fOut)
+	{
+		throw Error("Failed to create file " + aFileOut);
+	}
 
 	fprintf(fOut, "%c", (unsigned char)alg);	//записываем в выходной файл вид алгоритма, на основании которого идет архивация
 	WriteInt(fOut, aLstFileIn.size());			//записываем в выходной файл количество файлов для архивации
@@ -162,6 +174,10 @@ void Packer::Pack(const LstFile &aLstFileIn, const std::string &aFileOut)
 	for (LstFile::const_iterator it = aLstFileIn.begin(); it != aLstFileIn.end(); ++it)
 	{
 		fIn = fopen((*it).c_str(), "rb");
+		if (!fIn)
+		{
+			throw Error("Failed to open file " + *it);
+		}
 
 		fprintf(fOut, "%c", (unsigned char)it->size());	//записываем в выходной файл размер имени архивируемого файла
 		for (unsigned int i = 0; i < it->size(); ++i)	//записываем в выходной файл имя архивируемого файла
@@ -478,6 +494,10 @@ UnPacker::UnPacker(unsigned int aBufSize):
 void UnPacker::UnPack(const std::string &aFileIn)
 {
 	FILE *fOut, *fIn = fopen(aFileIn.c_str(), "rb");
+	if (!fIn)
+	{
+		throw Error("Failed to open file " + aFileIn);
+	}
 
 	unsigned char cAlg;
 	fscanf(fIn, "%c", &cAlg);
@@ -498,18 +518,22 @@ void UnPacker::UnPack(const std::string &aFileIn)
 	for (unsigned int i = 0; i < fileCount; ++i)
 	{
 		unsigned char fNameLen;
-		unP->SetNext(fIn, &fNameLen);
+		unP->_SetNext(fIn, &fNameLen);
 		std::string fName;
 		unsigned char ch;
 		for (unsigned int j = 0; j < fNameLen; ++j)
 		{
-			unP->SetNext(fIn, &ch);
+			unP->_SetNext(fIn, &ch);
 			fName.push_back(ch);
 		}
 		//**************************
-		fName = "_" + fName;
+		//fName = "_" + fName;
 		//**************************
 		fOut = fopen(fName.c_str(), "wb");
+		if (!fOut)
+		{
+			throw Error("Failed to create file " + fName);
+		}
 		unP->UnPack(fIn, fOut);
 		fclose(fOut);
 	}
@@ -543,10 +567,6 @@ void UnPackerRLE::UnPack(FILE *aFIn, FILE *aFOut)
 
 	while (fLen--)
 	{
-		if (!SetNext(aFIn, &cur))
-		{
-			break;
-		}
 		if (isMatch)
 		{
 			for (unsigned int j = 0; j < cur; ++j)
@@ -613,13 +633,13 @@ void UnPackerHuffman::ReadDictionary(FILE *aFIn)
 	unsigned char ch1, ch2;
 	unsigned int bitCount = 0;
 
-	SetNext(aFIn, &ch1);
+	_SetNext(aFIn, &ch1);
 	unsigned int dictSize = !ch1 ? UCHAR_MAX + 1 : ch1;
 
 	for (unsigned int i = 0; i < dictSize; ++i)
 	{
-		SetNext(aFIn, &ch1);
-		SetNext(aFIn, &ch2);
+		_SetNext(aFIn, &ch1);
+		_SetNext(aFIn, &ch2);
 		lstLeaf.push_back(new Huffman::UPTLeaf(ch1, ch2));
 	}
 }
@@ -678,7 +698,7 @@ inline bool UnPackerHuffman::NextBit(FILE *aFIn, unsigned char *aCurCh, unsigned
 	unsigned int tmpCh;
 	if (!*aCurSize)
 	{
-		SetNext(aFIn, aCurCh);
+		_SetNext(aFIn, aCurCh);
 		*aCurSize = BIT_IN_BYTE;
 	}
 	tmpCh = *aCurCh & MASK;

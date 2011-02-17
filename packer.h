@@ -27,6 +27,7 @@ protected:
 	~Reader();
 	
 	inline bool SetNext(FILE *aFIn, unsigned char *aCh);
+	inline void _SetNext(FILE *aFIn, unsigned char *aCh);
 	unsigned int ReadInt(FILE *aFIn);
 
 public:
