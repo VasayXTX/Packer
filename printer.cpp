@@ -5,9 +5,14 @@ Printer::Printer()
 	//empty
 }
 
-void Printer::PrintText(const std::string &aText) const
+void Printer::PrintLnText(const std::string &aText) const
 {
 	std::cout << aText << '\n';
+}
+
+void Printer::PrintText(const std::string &aText) const
+{
+	std::cout << aText;
 }
 
 void Printer::PrintAbout() const
@@ -39,4 +44,28 @@ void Printer::PrintHelp() const
 void Printer::PrintError(const Error &aErr) const
 {
 	std::cout << "Error: " << aErr.Text() << '\n';
+}
+
+void Printer::PrintPercent(unsigned int aVal) const
+{
+	static unsigned int valPrev = 0;
+	if (valPrev == aVal)
+	{
+		return;
+	}
+	if (aVal <= 10)
+	{
+		printf("%c%c", 8, 8);
+	}
+	else
+	{
+		printf("%c%c%c", 8, 8, 8);
+	}
+	printf("%i%c", aVal, '%');
+	valPrev = aVal;
+}
+
+void Printer::PrintTime(const std::string &aText, time_t aT) const
+{
+	std::cout << aText << aT << '\n';
 }
