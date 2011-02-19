@@ -36,9 +36,11 @@ void Printer::PrintHelp() const
 	std::cout << "\t\tLIST_FILE_NAME:\n";
 	std::cout << "\t\t\tList of files for compressing (FILE_NAME1, FILE_NAME2, ..)\n\n";
 	std::cout << "\tHow to use program for decompression:\n";
-	std::cout << "\t> Packer.exe /d ARCHIVE_FILE_NAME\n";
+	std::cout << "\t> Packer.exe /d ARCHIVE_FILE_NAME DIR\n";
 	std::cout << "\t\tARCHIVE_FILE_NAME:\n";
 	std::cout << "\t\t\tName of archived file";
+	std::cout << "\t\tDIR:\n";
+	std::cout << "\t\t\tDirectory for decompression. If not specified, archive decompress to current directory";
 }
 
 void Printer::PrintError(const Error &aErr) const

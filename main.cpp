@@ -10,21 +10,6 @@
 #include "error.h"
 #include "printer.h"
 
-void InitFile(const std::string &aFName, unsigned int aFLen)
-{
-	FILE *fOut = fopen(aFName.c_str(), "wb");
-
-	for (unsigned int c = 0; c <= UCHAR_MAX; ++c)
-	{
-		for (unsigned int i = 0; i < aFLen; ++i)
-		{
-			fprintf(fOut, "%c", (unsigned char)c);
-		}
-	}
-
-	fclose(fOut);
-}
-
 std::string GetShortFileName(const std::string &aStr)
 {
 	unsigned int i = i = aStr.size();
@@ -42,14 +27,12 @@ std::string GetShortFileName(const std::string &aStr)
 
 int main(int argc, char *argv[])
 {
-	//InitFile("input1.in", 1);
-	//InitFile("input2.in", 2);
-	//InitFile("input3.in", 3);
+	//argc = 4;
+	//argv[1] = "/d";
+	////argv[2] = "/h";	
+	//argv[2] = "output.out";
+	//argv[3] = "D:\\UnPacking";
 
-	argc = 3;
-	argv[1] = "/d";
-	//argv[2] = "/h";	
-	argv[2] = "output.out";
 	/*argv[4] = "input1.in";
 	argv[5] = "input.in";
 	argv[6] = "input3.in";*/
@@ -105,11 +88,20 @@ int main(int argc, char *argv[])
 		}
 		else if (!strcmp(argv[1], "/d"))
 		{
-			if (argc > 3)
+			if (argc > 4)
 			{
-				throw Error(std::string("Invalid key: ") + std::string(argv[3]));
+				throw Error(std::string("Invalid key: ") + std::string(argv[4]));
 			}
-			UnPacker::UnPacker().UnPack(argv[2]);
+			std::string dir;
+			if (argc == 4)
+			{
+				dir = argv[3];
+				if (dir[dir.size()-1] != '\\')
+				{
+					dir.push_back('\\');
+				}
+			}
+			UnPacker::UnPacker().UnPack(argv[2], dir);
 		}
 		else
 		{
@@ -122,6 +114,6 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	pr.PrintTime("Time at work: ", time(0) - tBegin);
-	system("pause");
+//	system("pause");
 	return 0;
 }

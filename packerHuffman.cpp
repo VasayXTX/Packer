@@ -413,7 +413,7 @@ inline bool UnPackerHuffman::NextBit(FILE *aFIn, unsigned char *aCurCh, unsigned
 	tmpCh = *aCurCh & MASK;
 	*aCurCh <<= 1;
 	--*aCurSize;
-	return (bool)tmpCh;
+	return tmpCh != 0;
 }
 
 //Функция реализующая декодирование

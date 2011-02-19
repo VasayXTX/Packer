@@ -16,7 +16,7 @@ private:
 public:
 	UnPacker(unsigned int aBufSize = Reader::DEF_BUF_SIZE);
 
-	void UnPack(const std::string &aFileIn);
+	void UnPack(const std::string &aFileIn, const std::string &aDir);
 };
 
 #endif

@@ -10,7 +10,7 @@ UnPacker::UnPacker(unsigned int aBufSize):
 	//empty
 }
 
-void UnPacker::UnPack(const std::string &aFileIn)
+void UnPacker::UnPack(const std::string &aFileIn, const std::string &aDir)
 {
 	FILE *fOut, *fIn;
 	if (fopen_s(&fIn, aFileIn.c_str(), "rb") || !fIn)
@@ -48,8 +48,9 @@ void UnPacker::UnPack(const std::string &aFileIn)
 			unP->_SetNext(fIn, &ch);
 			fName.push_back(ch);
 		}
+		fName = aDir + fName;
 		//**************************
-		fName = "_" + fName;
+		//fName = "_" + fName;
 		//**************************
 		if (fopen_s(&fOut, fName.c_str(), "wb") || !fOut)
 		{
