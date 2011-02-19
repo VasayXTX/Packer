@@ -4,6 +4,9 @@
 #include <time.h>
 
 #include "packer.h"
+#include "unPacker.h"
+#include "packerRLE.h"
+#include "packerHuffman.h"
 #include "error.h"
 #include "printer.h"
 
@@ -39,16 +42,16 @@ std::string GetShortFileName(const std::string &aStr)
 
 int main(int argc, char *argv[])
 {
-	/*InitFile("input1.in", 1);
-	InitFile("input2.in", 2);
-	InitFile("input3.in", 3);*/
+	//InitFile("input1.in", 1);
+	//InitFile("input2.in", 2);
+	//InitFile("input3.in", 3);
 
-	/*argc = 3;
-	argv[1] = "/d";*/
+	argc = 3;
+	argv[1] = "/d";
 	//argv[2] = "/h";	
-	//argv[2] = "output.out";
+	argv[2] = "output.out";
 	/*argv[4] = "input1.in";
-	argv[5] = "input2.in";
+	argv[5] = "input.in";
 	argv[6] = "input3.in";*/
 
 	Printer pr;
@@ -58,6 +61,7 @@ int main(int argc, char *argv[])
 		pr.PrintAbout();
 		return 0;
 	}
+	time_t tBegin = time(0);
 	try
 	{
 		if (argc == 2)
@@ -81,7 +85,7 @@ int main(int argc, char *argv[])
 			}
 
 			LstFile lstFile;
-			for (unsigned int i = 4; i < argc; ++i)
+			for (int i = 4; i < argc; ++i)
 			{
 				lstFile.push_back(GetShortFileName(argv[i]));
 			}
@@ -106,7 +110,6 @@ int main(int argc, char *argv[])
 				throw Error(std::string("Invalid key: ") + std::string(argv[3]));
 			}
 			UnPacker::UnPacker().UnPack(argv[2]);
-			return 0;
 		}
 		else
 		{
@@ -116,7 +119,9 @@ int main(int argc, char *argv[])
 	catch (Error &aErr)
 	{
 		pr.PrintError(aErr);
+		return 0;
 	}
-//	system("pause");
+	pr.PrintTime("Time at work: ", time(0) - tBegin);
+	system("pause");
 	return 0;
 }
