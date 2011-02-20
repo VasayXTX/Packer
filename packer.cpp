@@ -58,6 +58,21 @@ unsigned int Reader::ReadInt(FILE *aFIn)
 /********************************************* Packer ***********************************************/
 /****************************************************************************************************/
 
+std::string GetShortFileName(const std::string &aStr)
+{
+	unsigned int i = i = aStr.size();
+	while (i > 0 && aStr[i-1] != '\\')
+	{
+		--i;
+	}
+	std::string res;
+	while (i < aStr.size())
+	{
+		res.push_back(aStr[i++]);
+	}
+	return res;
+}
+
 //Функция, реализующая запись размера файла в несжатом виде в выходной файл
 void WriteInt(FILE *aFOut, unsigned int aI)
 {
@@ -94,10 +109,11 @@ void Packer::Pack(const LstFile &aLstFileIn, const std::string &aFileOut)
 			throw Error("Failed to open file " + *it);
 		}
 
-		fprintf(fOut, "%c", (unsigned char)it->size());	//записываем в выходной файл размер имени архивируемого файла
-		for (unsigned int i = 0; i < it->size(); ++i)	//записываем в выходной файл имя архивируемого файла
+		std::string shortFName = GetShortFileName(*it);
+		fprintf(fOut, "%c", (unsigned char)shortFName.size());	//записываем в выходной файл размер имени архивируемого файла
+		for (unsigned int i = 0; i < shortFName.size(); ++i)	//записываем в выходной файл имя архивируемого файла
 		{
-			fprintf(fOut, "%c", (*it)[i]);
+			fprintf(fOut, "%c", shortFName[i]);
 		}
 
 		//Определяем размер файла

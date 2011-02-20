@@ -10,21 +10,6 @@
 #include "error.h"
 #include "printer.h"
 
-std::string GetShortFileName(const std::string &aStr)
-{
-	unsigned int i = i = aStr.size();
-	while (i > 0 && aStr[i-1] != '\\')
-	{
-		--i;
-	}
-	std::string res;
-	while (i < aStr.size())
-	{
-		res.push_back(aStr[i++]);
-	}
-	return res;
-}
-
 int main(int argc, char *argv[])
 {
 	//argc = 4;
@@ -36,6 +21,11 @@ int main(int argc, char *argv[])
 	/*argv[4] = "input1.in";
 	argv[5] = "input.in";
 	argv[6] = "input3.in";*/
+	//argc = 5;
+	//argv[1] = "/c";
+	//argv[2] = "/r";
+	//argv[3] = "D:\\Packer\\Tests\\RLE\\Output\\test00(zero).pck";
+	//argv[4] = "D:\\Packer\\Tests\\RLE\\Input\\test00(zero).tst";
 
 	Printer pr;
 
@@ -70,7 +60,7 @@ int main(int argc, char *argv[])
 			LstFile lstFile;
 			for (int i = 4; i < argc; ++i)
 			{
-				lstFile.push_back(GetShortFileName(argv[i]));
+				lstFile.push_back(argv[i]);
 			}
 
 			if (!strcmp(argv[2], "/r"))
@@ -114,6 +104,6 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	pr.PrintTime("Time at work: ", time(0) - tBegin);
-//	system("pause");
+	//system("pause");
 	return 0;
 }
