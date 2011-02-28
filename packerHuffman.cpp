@@ -254,14 +254,13 @@ void PackerHuffman::Coding(FILE *aFIn, FILE *aFOut, unsigned char *aCurCh, unsig
 	unsigned int i = 0;
 	while (SetNext(aFIn, &cur))
 	{
-		aPr.PrintPercent((double)(i++) / aFSize * 100);
+		aPr.PrintPercent((unsigned int)((double)(i++) / aFSize * 100));
 		WriteCode(aFOut, dict[cur], aCurCh, aCurSize);
 	}
 	if (*aCurSize)
 	{
 		fprintf(aFOut, "%c", *aCurCh);
 	}
-	aPr.PrintPercent(100);
 }
 
 void PackerHuffman::PrintReport() const
@@ -429,9 +428,8 @@ void UnPackerHuffman::Decoding(FILE *aFIn, FILE *aFOut, unsigned char *aCurCh, u
 		{
 			fprintf(aFOut, "%c", static_cast<UPTLeaf *>(node)->Byte());
 			node = root;
-			aPr.PrintPercent((double)(i++) / fSize * 100);
+			aPr.PrintPercent((unsigned int)((double)(i++) / fSize * 100));
 			--aFLen;
 		}
 	}
-	aPr.PrintPercent(100);
 }

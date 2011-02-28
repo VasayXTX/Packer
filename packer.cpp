@@ -124,6 +124,7 @@ void Packer::Pack(const LstFile &aLstFileIn, const std::string &aFileOut)
 		Printer pr;
 		pr.PrintText("Compression " + *it + ": 0%");
 		_Pack(fIn, fOut, fSize, pr);
+		pr.PrintPercent(100);
 		pr.PrintText("\n");
 
 		fclose(fIn);

@@ -60,6 +60,7 @@ void UnPacker::UnPack(const std::string &aFileIn, const std::string &aDir)
 		Printer pr;
 		pr.PrintText("Decompression " + fName + ": 0%");
 		unP->_UnPack(fIn, fOut, pr);
+		pr.PrintPercent(100);
 		pr.PrintText("\n");
 
 		fclose(fOut);

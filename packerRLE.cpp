@@ -22,7 +22,7 @@ void PackerRLE::_Pack(FILE *aFIn, FILE *aFOut, unsigned int aFSize, const Printe
 {
 	WriteInt(aFOut, 0);
 	unsigned int fLen = Coding(aFIn, aFOut, aFSize, aPr);
-	fseek(aFOut, -fLen - sizeof(int), SEEK_CUR);
+	fseek(aFOut, -(int)fLen - sizeof(int), SEEK_CUR);
 	WriteInt(aFOut, fLen);
 	fseek(aFOut, fLen, SEEK_CUR);
 }
@@ -36,7 +36,7 @@ unsigned int PackerRLE::Coding(FILE *aFIn, FILE *aFOut, unsigned int aFSize, con
 	unsigned int i = 0;
 	while (SetNext(aFIn, &cur))
 	{
-		aPr.PrintPercent((double)(i++) / aFSize * 100);
+		aPr.PrintPercent((unsigned int)((double)(i++) / aFSize * 100));
 		if (isMatch)
 		{
 			if (cur == prev)
@@ -75,7 +75,6 @@ unsigned int PackerRLE::Coding(FILE *aFIn, FILE *aFOut, unsigned int aFSize, con
 	{
 		WriteRLECode(aFOut, counter, &fLen);
 	}
-	aPr.PrintPercent(100);
 	return fLen;
 }
 
@@ -102,7 +101,7 @@ void UnPackerRLE::_UnPack(FILE *aFIn, FILE *aFOut, const Printer &aPr)
 	while (fLen--)
 	{
 		_SetNext(aFIn, &cur);
-		aPr.PrintPercent((double)(i++) / fSize * 100);
+		aPr.PrintPercent((unsigned int)((double)(i++) / fSize * 100));
 		if (isMatch)
 		{
 			for (unsigned int j = 0; j < cur; ++j)
@@ -126,5 +125,4 @@ void UnPackerRLE::_UnPack(FILE *aFIn, FILE *aFOut, const Printer &aPr)
 			}
 		}
 	}
-	aPr.PrintPercent(100);
 }
