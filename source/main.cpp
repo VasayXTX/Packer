@@ -3,12 +3,12 @@
 #include <string>
 #include <time.h>
 
-#include "packer.h"
-#include "unPacker.h"
-#include "packerRLE.h"
-#include "packerHuffman.h"
-#include "error.h"
-#include "printer.h"
+#include "../Header/packer.h"
+#include "../Header/unPacker.h"
+#include "../Header/packerRLE.h"
+#include "../Header/packerHuffman.h"
+#include "../Header/error.h"
+#include "../Header/printer.h"
 
 int main(int argc, char *argv[])
 {

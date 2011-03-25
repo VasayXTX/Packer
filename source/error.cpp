@@ -1,4 +1,4 @@
-#include "error.h"
+#include "../Header/error.h"
 
 Error::Error(const std::string &aText):
 	text(aText)
